@@ -1,0 +1,205 @@
+<html>
+<head>
+    <title>Final Exam VN5079:</title>
+    
+    <link rel="icon" href="data:,">
+    
+    <!-- vertex Shader -->
+    <script id="sphereMap-V"  type="x-shader/x-vertex">
+    #version 300 es
+    precision mediump float;
+    // Vertex shader for phong illumination model
+    // Per vertex shading
+
+    // Vertex Attributes
+    in vec3 aVertexPosition; // in model coords
+    in vec2 aUV;    // u-v coordinates
+
+    // outputs
+    out vec2 theUV;  // pass uv's onto the fragment shader
+    
+    // for object rotation
+    uniform vec3 theta;
+    uniform mat4 modelt;
+      
+      
+    void main()
+    {
+        // Compute the sines and cosines of each rotation
+        // about each axis
+        vec3 angles = radians( theta );
+        vec3 c = cos( angles );
+        vec3 s = sin( angles );
+
+        // rotation matrices
+        mat4 rx = mat4 ( 1.0,  0.0,  0.0,  0.0,
+                         0.0,  c.x,  s.x,  0.0,
+                         0.0, -s.x,  c.x,  0.0,
+                         0.0,  0.0,  0.0,  1.0 );
+
+        mat4 ry = mat4 ( c.y,  0.0, -s.y,  0.0,
+                         0.0,  1.0,  0.0,  0.0,
+                         s.y,  0.0,  c.y,  0.0,
+                         0.0,  0.0,  0.0,  1.0 );
+
+         mat4 rz = mat4 ( c.z,  s.z,  0.0,  0.0,
+                         -s.z,  c.z,  0.0,  0.0,
+                         0.0,  0.0,  1.0,  0.0,
+                         0.0,  0.0,  0.0,  1.0 );
+                         
+        // pass uvs to fragment shader
+        theUV = aUV;
+
+        // transform vertex to clip space
+        gl_Position =  rz * ry * rx * modelt * vec4 (aVertexPosition, 1.0);
+    }
+
+    </script>
+
+
+     <!-- fragment Shader -->
+     <script id="sphereMap-F" type="x-shader/x-fragment">
+         #version 300 es
+
+         // Fragment shader for phong illumination model
+         // Per vertex shading
+
+         precision lowp float;
+             
+         // uvs passed in from vertex shader
+         in vec2 theUV;
+         
+         // the texture to use
+         uniform sampler2D theTexture;
+         uniform sampler2D marbTexture;
+         uniform int background;
+
+         // Color that is the result of this shader
+         out vec4 fragColor;
+
+           void main(void) {
+
+              vec4 green = vec4(0.0,1.0,0.0,1.0);
+              vec4 blue = vec4(0.0,0.0,1.0,1.0);
+              vec4 red = vec4(1.0,0.0,0.0,1.0);
+              vec4 random = vec4(0.4,0.30,0.70,1.0);
+
+              if(background == 0){
+                fragColor = texture (theTexture, theUV);
+              }
+              else if (background == 1){
+                fragColor = texture (marbTexture, theUV);
+              }
+              else{
+                float red1= theUV[0]*1.5;
+                float blue1= theUV[0]*1.5;
+                float green1= theUV[1]*2.5;
+                float random1= theUV[1]*1.5;
+                fragColor= red1*red + green1*green + blue1*blue + random1*random;
+              }
+             
+            }
+
+    </script>
+     
+     <!-- Matrix library and code for standard transformations -->
+     <script type="text/javascript" src="gl-matrix-min.js"></script>
+     
+     <!-- include the shape creation functions -->
+    <script type="text/javascript" src="./cgIShape.js"></script>
+    
+    <!-- definition of standard shapes -->
+    <script type="text/javascript" src="./myShapes-min.js"></script>
+    
+    <!-- include the main tesselation functions -->
+    <script type="text/javascript" src="./finalMain.js"></script>
+    
+    <!-- texture images -->
+    <img id="world-texture" src="abc.jpg" style="display: none;"> </img>
+     <!-- <img id="marb-texture" src="marble.jpg" style="display: none;" > </img> -->
+    
+    <!-- keyboard functions -->
+    <script type="text/javascript">
+      function gotKey (event) {
+      
+      var key = event.key;
+      
+      //  change object type
+      if (key == 'c') {
+          nowShowing = 'Cube';
+          angles = cube_angles;
+      }
+      if (key == 's') {
+          nowShowing = 'Sphere';
+          angles = sphere_angles;
+      }
+      
+      // change texture
+      if (key == '1') curTexture = 'globe';
+      if (key == '2') curTexture = 'myimage';
+      if (key == '3') curTexture = 'proc';
+      
+      //  incremental rotation
+      if (key == 'x') angles[0] -= angleInc;
+      if (key == 'y') angles[1] -= angleInc;
+      if (key == 'z') angles[2] -= angleInc;
+      if (key == 'X') angles[0] += angleInc;
+      if (key == 'Y') angles[1] += angleInc;
+      if (key == 'Z') angles[2] += angleInc;
+          
+      draw();
+    }
+    </script>
+    
+  <script type="text/javascript">
+    // Call init once the webpage has loaded
+    window.onload = init;
+  </script>
+</head>
+
+<body>
+  <h1>Final Exam VN5079</h1>
+  <table>
+       <tr>
+           <td><canvas id="webgl-canvas" width="500" height="500">
+             Your browser does not support the HTML5 canvas element.
+           </canvas></td>
+           
+           <td>
+               <h3>Controls</h3>
+               
+               <table border="1">
+               <tbody>
+                   <tr>
+                   <td>1, 2, 3</td>
+                   <td>Switch between globe image, your image, and procedural texture</td>
+                   </tr>
+               <tr>
+               <td>x, y, z</td>
+               <td>Rotate the current shape forward about the x, y, or z axis</td>
+               </tr>
+               <tr>
+               <td>X, Y, Z</td>
+               <td>Rotate the current shape backward about the x, y, or z axis</td>
+               </tr>
+               <tr>
+               <td>c</td>
+               <td>Select the cube as the current shape</td>
+               </tr>
+               <tr>
+               <td>s</td>
+               <td>Select the sphere as the current shape</td>
+               </tr>
+               </tbody>
+               </table>
+               
+           </td>
+       </tr>
+   </table>
+  
+
+  
+  
+
+</body>
+</html>
