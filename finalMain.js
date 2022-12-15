@@ -166,18 +166,6 @@ function drawShapes(program) {
 
   gl.useProgram(program);
 
-  // let cubeMatrix = glMatrix.mat4.create();
-  // glMatrix.mat4.scale(cubeMatrix, cubeMatrix, [2, 0.5, 3]);
-  // glMatrix.mat4.translate(cubeMatrix, cubeMatrix, [0, -5, 0]);
-  // // gl.uniformMatrix4fv(program.phonguModelT, false, cubeMatrix);
-  // // setUpPhong(program, 1.0, 0.2, 0.6);
-  // gl.activeTexture (gl.TEXTURE0+1);
-  // gl.bindTexture (gl.TEXTURE_2D, modelTexture);
-
-  // gl.bindVertexArray(myCube.VAO);
-  // gl.drawElements(gl.TRIANGLES, myCube.indices.length, gl.UNSIGNED_SHORT, 0);
-  // console.log("Cube here", myCube);
-
   // base
   let cylinderMatrix = glMatrix.mat4.create();
   glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.45, 0.45, 0]);
@@ -207,7 +195,6 @@ function drawShapes(program) {
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, steelTexture);
-  // gl.uniform1i (program.uAbstractTexture, 1);
   gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
 
   gl.bindVertexArray(myCylinder.VAO);
@@ -226,7 +213,6 @@ function drawShapes(program) {
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, steelTexture);
-  // gl.uniform1i (program.uAbstractTexture, 1);
   gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
 
   gl.bindVertexArray(myCylinder.VAO);
@@ -248,7 +234,6 @@ function drawShapes(program) {
     gl.uniform3fv (program.uTheta, new Float32Array(angles));
     gl.activeTexture (gl.TEXTURE0);
     gl.bindTexture (gl.TEXTURE_2D, steelTexture);
-    // gl.uniform1i (program.uAbstractTexture, 1);
     gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
   
     gl.bindVertexArray(myCylinder.VAO);
@@ -268,7 +253,6 @@ function drawShapes(program) {
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, steelTexture);
-  // gl.uniform1i (program.uAbstractTexture, 1);
   gl.uniformMatrix4fv(program.uModelT, false, coneMatrix);
 
   gl.bindVertexArray(myCone.VAO);
@@ -287,7 +271,6 @@ function drawShapes(program) {
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, woodTexture);
-  // gl.uniform1i (program.uAbstractTexture, 1);
   gl.uniformMatrix4fv(program.uModelT, false, cubeMatrix);
 
   gl.bindVertexArray(myCube.VAO);
@@ -306,39 +289,11 @@ function drawShapes(program) {
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, modelTexture);
-  // gl.uniform1i (program.uAbstractTexture, 1);
   gl.uniformMatrix4fv(program.uModelT, false, sphereMatrix);
 
   gl.bindVertexArray(mySphere.VAO);
   gl.drawElements(gl.TRIANGLES, mySphere.indices.length, gl.UNSIGNED_SHORT, 0);
 
-
-
- 
-
-
-
-  // gl.useProgram(program);
-  // let coneMatrix = glMatrix.mat4.create();
-  // glMatrix.mat4.scale(coneMatrix, coneMatrix, [2, 0.5, 3]);
-
-  // glMatrix.mat4.translate(coneMatrix, coneMatrix, [-2, -5, 0]);
-  // gl.uniformMatrix4fv(program.phonguModelT, false, coneMatrix);
-  // setUpPhong(program, 1.0, 0.2, 0.6);
-  // gl.bindVertexArray(myCone.VAO);
-  // gl.drawElements(gl.TRIANGLES, myCone.indices.length, gl.UNSIGNED_SHORT, 0);
-  // console.log("Cube here", myCone);
-
-  // gl.useProgram(program);
-  // let cubeMatrix2 = glMatrix.mat4.create();
-  // glMatrix.mat4.scale(cubeMatrix2, cubeMatrix2, [2, 0.5, 3]);
-
-  // glMatrix.mat4.translate(cubeMatrix2, cubeMatrix2, [2, -5, 0]);
-  // gl.uniformMatrix4fv(program.phonguModelT, false, cubeMatrix2);
-  // setUpPhong(program, 1.0, 0.2, 0.6);
-  // gl.bindVertexArray(myCube.VAO);
-  // gl.drawElements(gl.TRIANGLES, myCube.indices.length, gl.UNSIGNED_SHORT, 0);
-  // console.log("Cube here", myCube);
 
 }
 
@@ -354,17 +309,12 @@ function drawShapes(program) {
   //
   function initPrograms () {
     // set up the per-vertex program
-    // const phongPerVertexShader = getShader('phong-per-vertex-V');
-    // const phongPerFragmentShader = getShader('phong-per-fragment-F');
     const VertexShaderTxt = getShader('sphereMap-V');
     const FragmentShaderTxt = getShader('sphereMap-F');
 
     // Create a program
     let program = gl.createProgram();
     
-    // Attach the shaders to this program
-    // gl.attachShader(program, phongPerVertexShader);
-    // gl.attachShader(program, phongPerFragmentShader);
     gl.attachShader(program, VertexShaderTxt);
     gl.attachShader(program, FragmentShaderTxt);
     gl.linkProgram(program);
@@ -377,33 +327,9 @@ function drawShapes(program) {
     gl.useProgram(program);
     // We attach the location of these shader values to the program instance
     // for easy access later in the code
-    // program.aVertexPosition = gl.getAttribLocation(program, 'aVertexPosition');
-    // program.aNormal = gl.getAttribLocation(program, 'aNormal');
-    // program.phongAVert = gl.getAttribLocation(program,"phongAVertexPosition");
-    // program.sphereAVert = gl.getAttribLocation(program,"sphereAVertexPosition");
-    // program.phonguModelT = gl.getUniformLocation(program, "phongmodelT");
-    // program.phonguViewT = gl.getUniformLocation(program, "phongviewT");
-    // program.phonguProjT = gl.getUniformLocation(program, "phongprojT");
-    // program.sphereuModelT = gl.getUniformLocation(program, "spheremodelT");
-    // program.sphereViewT = gl.getUniformLocation(program, "sphereviewT");
-    // program.sphereProjT = gl.getUniformLocation(program, "sphereprojT");
-    // program.aNormal = gl.getAttribLocation(program, "aNormal");
-     program.uModelT = gl.getUniformLocation (program, 'modelt');
-    // program.uViewT = gl.getUniformLocation (program, 'viewT');
-    // program.uProjT = gl.getUniformLocation (program, 'projT');
-    // program.ambientLight = gl.getUniformLocation (program, 'ambientLight');
-    // program.lightPosition = gl.getUniformLocation (program, 'lightPosition');
-    // program.lightColor = gl.getUniformLocation (program, 'lightColor');
-    // program.baseColor = gl.getUniformLocation (program, 'baseColor');
-    // program.specHighlightColor = gl.getUniformLocation (program, 'specHighlightColor');
-    // program.ka = gl.getUniformLocation (program, 'ka');
-    // program.kd = gl.getUniformLocation (program, 'kd');
-    // program.ks = gl.getUniformLocation (program, 'ks');
-    // program.ke = gl.getUniformLocation (program, 'ke');
-    // program.aUV = gl.getAttribLocation(program, "aUV");
-    // program.uTheTexture = gl.getUniformLocation(program, "theTexture");
-    // program.uCreatedTexture = gl.getUniformLocation(program, "createdTexture");
-    // program.uTxValue = gl.getUniformLocation(program, "txValue");
+
+  program.uModelT = gl.getUniformLocation (program, 'modelt');
+  
       
 
 
@@ -427,36 +353,19 @@ function bindVAO(shape, program) {
   //create and bind VAO
     let theVAO = gl.createVertexArray();
     gl.bindVertexArray(theVAO);
-    
-    // create, bind, and fill buffer for vertex locations
-    // vertex locations can be obtained from the points member of the
-    // shape object.  3 floating point values (x,y,z) per vertex are
-    // stored in this array.
     let myVertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, myVertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(shape.points), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(program.aVertexPosition);
     gl.vertexAttribPointer(program.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-    
-    // create, bind, and fill buffer for uv's
-    // uvs can be obtained from the uv member of the
-    // shape object.  2 floating point values (u,v) per vertex are
-    // stored in this array.
     let uvBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(shape.uv), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(program.aUV);
     gl.vertexAttribPointer(program.aUV, 2, gl.FLOAT, false, 0, 0);
-    
-    // Setting up element array
-    // element indicies can be obtained from the indicies member of the
-    // shape object.  3 values per triangle are stored in this
-    // array.
     let myIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, myIndexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(shape.indices), gl.STATIC_DRAW);
-
-    // Do cleanup
     gl.bindVertexArray(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
