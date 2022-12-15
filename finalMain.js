@@ -5,6 +5,8 @@
   let gl;
   var myCube = null;
   var myCylinder = null;
+  var myCone = null;
+  var mySphere = null;
 
   // GLSL programs
   let drawProgram;
@@ -13,6 +15,9 @@
 
   // textures
   let modelTexture;
+  let woodTexture;
+  let steelTexture;
+
 
   // rotation
 
@@ -30,8 +35,12 @@
 function createShapes() {
   myCube = new Cube(5);
   myCube.VAO = bindVAO(myCube, drawProgram);
-  myCylinder = new Cylinder (9, 10);
+  myCylinder = new Cylinder (50, 50);
   myCylinder.VAO = bindVAO(myCylinder, drawProgram);
+  myCone = new Cone (50, 50);
+  myCone.VAO = bindVAO(myCone, drawProgram);
+  mySphere = new Sphere (50, 50);
+  mySphere.VAO = bindVAO(mySphere, drawProgram);
 
 }
 
@@ -76,13 +85,34 @@ function setUpTextures(){
     
   // get some texture space from the gpu
   modelTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, modelTexture);
   
   // load the actual image
   const worldImage = document.getElementById("world-texture");
-  worldImage.src = 'abc.jpg';
+  worldImage.src = 'ball.jpg';
 
   worldImage.onload = () => {
       doLoad (modelTexture, worldImage);
+  };
+
+  woodTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, woodTexture);
+
+  const woodImage = document.getElementById("wood-texture");
+  woodImage.src = 'wood.jpg';
+
+  woodImage.onload = () => {
+      doLoad (woodTexture, woodImage);
+  };
+
+  steelTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, steelTexture);
+
+  const steelImage = document.getElementById("steel-texture");
+  steelImage.src = 'steel.jpg';
+
+  steelImage.onload = () => {
+      doLoad (steelTexture, steelImage);
   };
 
   // marbTexture = gl.createTexture();
@@ -107,27 +137,27 @@ function doLoad(theTexture, theImage) {
 
 
 
-// function setUpPhong(program, a, b, c) {
-//   gl.useProgram(program);
-//   let ambientLights = gl.getUniformLocation(program, "ambientLight");
-//   gl.uniform3fv(ambientLights, [a,a,a]);
-//   let lightColors = gl.getUniformLocation(program, "lightColor");
-//   gl.uniform3fv(lightColors, [b,b,b]);
-//   let lightPositions = gl.getUniformLocation(program, "lightPosition");
-//   gl.uniform3fv(lightPositions, [11, 10, 5]);
-//   let baseColors = gl.getUniformLocation(program, "baseColor");
-//   gl.uniform3fv(baseColors, [a, b, c]);
-//   let specHighlightColors = gl.getUniformLocation(program, "specHighlightColor");
-//   gl.uniform3fv(specHighlightColors, [1.0, 1.0, 1.0]);
-//   let ka = gl.getUniformLocation(program, "ka");
-//   gl.uniform1f(ka, 1);
-//   let ks = gl.getUniformLocation(program, "ks");
-//   gl.uniform1f(ks, 0.1);
-//   let kd = gl.getUniformLocation(program, "kd");
-//   gl.uniform1f(kd, 0.5);
-//   let ke = gl.getUniformLocation(program, "ke");
-//   gl.uniform1f(ke, 1);
-// }
+function setUpPhong(program, a, b, c) {
+  gl.useProgram(program);
+  let ambientLights = gl.getUniformLocation(program, "ambientLight");
+  gl.uniform3fv(ambientLights, [a,a,a]);
+  let lightColors = gl.getUniformLocation(program, "lightColor");
+  gl.uniform3fv(lightColors, [b,b,b]);
+  let lightPositions = gl.getUniformLocation(program, "lightPosition");
+  gl.uniform3fv(lightPositions, [11, 10, 5]);
+  let baseColors = gl.getUniformLocation(program, "baseColor");
+  gl.uniform3fv(baseColors, [a, b, c]);
+  let specHighlightColors = gl.getUniformLocation(program, "specHighlightColor");
+  gl.uniform3fv(specHighlightColors, [1.0, 1.0, 1.0]);
+  let ka = gl.getUniformLocation(program, "ka");
+  gl.uniform1f(ka, 1);
+  let ks = gl.getUniformLocation(program, "ks");
+  gl.uniform1f(ks, 0.1);
+  let kd = gl.getUniformLocation(program, "kd");
+  gl.uniform1f(kd, 0.5);
+  let ke = gl.getUniformLocation(program, "ke");
+  gl.uniform1f(ke, 1);
+}
 
 //
 //  This function draws all of the shapes required for your scene
@@ -148,10 +178,128 @@ function drawShapes(program) {
   // gl.drawElements(gl.TRIANGLES, myCube.indices.length, gl.UNSIGNED_SHORT, 0);
   // console.log("Cube here", myCube);
 
-
+  // base
   let cylinderMatrix = glMatrix.mat4.create();
-  glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [1, 0.5, 1]);
-  // glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [1, 5, 5]);
+  glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.45, 0.45, 0]);
+  glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.65, 0.05, 1]);
+ 
+  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+  gl.uniform1i(program.uTextureValue,1);
+  
+  gl.uniform3fv (program.uTheta, new Float32Array(angles));
+  gl.activeTexture (gl.TEXTURE0);
+  gl.bindTexture (gl.TEXTURE_2D, steelTexture);
+  // gl.uniform1i (program.uAbstractTexture, 1);
+  gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
+
+  gl.bindVertexArray(myCylinder.VAO);
+  gl.drawElements(gl.TRIANGLES, myCylinder.indices.length, gl.UNSIGNED_SHORT, 0);
+  console.log("cylinder: ", myCylinder);
+
+  // second base
+  cylinderMatrix = glMatrix.mat4.create();
+  glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.45, 0.40, 0]);
+  glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.15, 0.15, 1]);
+ 
+  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+  gl.uniform1i(program.uTextureValue,1);
+  
+  gl.uniform3fv (program.uTheta, new Float32Array(angles));
+  gl.activeTexture (gl.TEXTURE0);
+  gl.bindTexture (gl.TEXTURE_2D, steelTexture);
+  // gl.uniform1i (program.uAbstractTexture, 1);
+  gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
+
+  gl.bindVertexArray(myCylinder.VAO);
+  gl.drawElements(gl.TRIANGLES, myCylinder.indices.length, gl.UNSIGNED_SHORT, 0);
+  console.log("cylinder: ", myCylinder);
+
+  // base rod
+  cylinderMatrix = glMatrix.mat4.create();
+  glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.45, 0, 0]);
+  glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.03, 0.649, 0.25]);
+ 
+ 
+  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+  gl.uniform1i(program.uTextureValue,1);
+  
+  gl.uniform3fv (program.uTheta, new Float32Array(angles));
+  gl.activeTexture (gl.TEXTURE0);
+  gl.bindTexture (gl.TEXTURE_2D, steelTexture);
+  // gl.uniform1i (program.uAbstractTexture, 1);
+  gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
+
+  gl.bindVertexArray(myCylinder.VAO);
+  gl.drawElements(gl.TRIANGLES, myCylinder.indices.length, gl.UNSIGNED_SHORT, 0);
+  console.log("cylinder: ", myCylinder);
+
+
+    // base 2nd rod
+    cylinderMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.231, -0.54, 0]);
+    glMatrix.mat4.rotateZ(cylinderMatrix,cylinderMatrix,radians(45));
+    glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.03, 0.649, 0.25]);
+   
+   
+   
+    //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+    gl.uniform1i(program.uTextureValue,1);
+    
+    gl.uniform3fv (program.uTheta, new Float32Array(angles));
+    gl.activeTexture (gl.TEXTURE0);
+    gl.bindTexture (gl.TEXTURE_2D, steelTexture);
+    // gl.uniform1i (program.uAbstractTexture, 1);
+    gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
+  
+    gl.bindVertexArray(myCylinder.VAO);
+    gl.drawElements(gl.TRIANGLES, myCylinder.indices.length, gl.UNSIGNED_SHORT, 0);
+    console.log("cylinder: ", myCylinder);
+
+  // bulb holder
+  let coneMatrix = glMatrix.mat4.create();
+  glMatrix.mat4.translate(coneMatrix, coneMatrix, [0, -0.7, 0]);
+  glMatrix.mat4.rotateZ(coneMatrix,coneMatrix,radians(145));
+  glMatrix.mat4.scale(coneMatrix, coneMatrix, [0.23, 0.34, 0.25]);
+ 
+ 
+  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+  gl.uniform1i(program.uTextureValue,1);
+  
+  gl.uniform3fv (program.uTheta, new Float32Array(angles));
+  gl.activeTexture (gl.TEXTURE0);
+  gl.bindTexture (gl.TEXTURE_2D, steelTexture);
+  // gl.uniform1i (program.uAbstractTexture, 1);
+  gl.uniformMatrix4fv(program.uModelT, false, coneMatrix);
+
+  gl.bindVertexArray(myCone.VAO);
+  gl.drawElements(gl.TRIANGLES, myCone.indices.length, gl.UNSIGNED_SHORT, 0);
+  console.log("cone: ", myCone);
+
+  // table
+  let cubeMatrix = glMatrix.mat4.create();
+  glMatrix.mat4.scale(cubeMatrix, cubeMatrix, [1.80, 0.15, 1]);
+  glMatrix.mat4.translate(cubeMatrix, cubeMatrix, [0, 3.65, 0]);
+  
+ 
+  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+  gl.uniform1i(program.uTextureValue,1);
+  
+  gl.uniform3fv (program.uTheta, new Float32Array(angles));
+  gl.activeTexture (gl.TEXTURE0);
+  gl.bindTexture (gl.TEXTURE_2D, woodTexture);
+  // gl.uniform1i (program.uAbstractTexture, 1);
+  gl.uniformMatrix4fv(program.uModelT, false, cubeMatrix);
+
+  gl.bindVertexArray(myCube.VAO);
+  gl.drawElements(gl.TRIANGLES, myCube.indices.length, gl.UNSIGNED_SHORT, 0);
+
+  // Sphere
+
+  let sphereMatrix = glMatrix.mat4.create();
+  glMatrix.mat4.scale(sphereMatrix, sphereMatrix, [0.25, 0.25, 0.25]);
+  glMatrix.mat4.translate(sphereMatrix, sphereMatrix, [1.75, 1.39, 0]);
+  
+ 
   //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
   gl.uniform1i(program.uTextureValue,1);
   
@@ -159,11 +307,16 @@ function drawShapes(program) {
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, modelTexture);
   // gl.uniform1i (program.uAbstractTexture, 1);
-  gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
+  gl.uniformMatrix4fv(program.uModelT, false, sphereMatrix);
 
-  gl.bindVertexArray(myCylinder.VAO);
-  gl.drawElements(gl.TRIANGLES, myCylinder.indices.length, gl.UNSIGNED_SHORT, 0);
-  console.log("cylinder: ", myCylinder);
+  gl.bindVertexArray(mySphere.VAO);
+  gl.drawElements(gl.TRIANGLES, mySphere.indices.length, gl.UNSIGNED_SHORT, 0);
+
+
+
+ 
+
+
 
   // gl.useProgram(program);
   // let coneMatrix = glMatrix.mat4.create();
