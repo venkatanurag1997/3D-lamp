@@ -147,14 +147,11 @@ function drawShapes(program) {
   let cylinderMatrix = glMatrix.mat4.create();
   glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.45, 0.45, 0]);
   glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.65, 0.05, 1]);
- 
-  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
   gl.uniform1i(program.uTextureValue,1);
   
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
   gl.activeTexture (gl.TEXTURE0);
   gl.bindTexture (gl.TEXTURE_2D, steelTexture);
-  // gl.uniform1i (program.uAbstractTexture, 1);
   gl.uniformMatrix4fv(program.uModelT, false, cylinderMatrix);
 
   gl.bindVertexArray(myCylinder.VAO);
@@ -166,7 +163,7 @@ function drawShapes(program) {
   glMatrix.mat4.translate(cylinderMatrix, cylinderMatrix, [-0.45, 0.40, 0]);
   glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.15, 0.15, 1]);
  
-  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+ 
   gl.uniform1i(program.uTextureValue,1);
   
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
@@ -184,7 +181,6 @@ function drawShapes(program) {
   glMatrix.mat4.scale(cylinderMatrix, cylinderMatrix, [0.03, 0.649, 0.25]);
  
  
-  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
   gl.uniform1i(program.uTextureValue,1);
   
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
@@ -205,7 +201,6 @@ function drawShapes(program) {
    
    
    
-    //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
     gl.uniform1i(program.uTextureValue,1);
     
     gl.uniform3fv (program.uTheta, new Float32Array(angles));
@@ -224,7 +219,7 @@ function drawShapes(program) {
   glMatrix.mat4.scale(coneMatrix, coneMatrix, [0.23, 0.34, 0.25]);
  
  
-  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
+  
   gl.uniform1i(program.uTextureValue,1);
   
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
@@ -259,8 +254,6 @@ function drawShapes(program) {
   glMatrix.mat4.scale(sphereMatrix, sphereMatrix, [0.25, 0.25, 0.25]);
   glMatrix.mat4.translate(sphereMatrix, sphereMatrix, [1.75, 1.39, 0]);
   
- 
-  //gl.uniformMatrix4fv(program.aVertexPosition, false, cylinderMatrix);
   gl.uniform1i(program.uTextureValue,1);
   
   gl.uniform3fv (program.uTheta, new Float32Array(angles));
@@ -323,11 +316,11 @@ function drawShapes(program) {
   return program;
   }
 
-  //shader VAO
+
 function bindVAO(shape, program) {
   console.log("Binding Shader VAO", shape, "\n now program", program);
 
-  //create and bind VAO
+  
     let theVAO = gl.createVertexArray();
     gl.bindVertexArray(theVAO);
     let myVertexBuffer = gl.createBuffer();
@@ -350,9 +343,9 @@ function bindVAO(shape, program) {
     return theVAO;
 }
 
-  // creates a VAO and returns its ID
+ 
   function bindTextureVAO(shape, program) {
-    //create and bind VAO
+  
     let theVAO = gl.createVertexArray();
     gl.bindVertexArray(theVAO);
 
