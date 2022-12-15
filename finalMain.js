@@ -136,29 +136,6 @@ function doLoad(theTexture, theImage) {
 }
 
 
-
-function setUpPhong(program, a, b, c) {
-  gl.useProgram(program);
-  let ambientLights = gl.getUniformLocation(program, "ambientLight");
-  gl.uniform3fv(ambientLights, [a,a,a]);
-  let lightColors = gl.getUniformLocation(program, "lightColor");
-  gl.uniform3fv(lightColors, [b,b,b]);
-  let lightPositions = gl.getUniformLocation(program, "lightPosition");
-  gl.uniform3fv(lightPositions, [11, 10, 5]);
-  let baseColors = gl.getUniformLocation(program, "baseColor");
-  gl.uniform3fv(baseColors, [a, b, c]);
-  let specHighlightColors = gl.getUniformLocation(program, "specHighlightColor");
-  gl.uniform3fv(specHighlightColors, [1.0, 1.0, 1.0]);
-  let ka = gl.getUniformLocation(program, "ka");
-  gl.uniform1f(ka, 1);
-  let ks = gl.getUniformLocation(program, "ks");
-  gl.uniform1f(ks, 0.1);
-  let kd = gl.getUniformLocation(program, "kd");
-  gl.uniform1f(kd, 0.5);
-  let ke = gl.getUniformLocation(program, "ke");
-  gl.uniform1f(ke, 1);
-}
-
 //
 //  This function draws all of the shapes required for your scene
 //
