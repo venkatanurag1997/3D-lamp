@@ -1,4 +1,4 @@
-# vn5079finalcg
+# 3D-lamp
 In this project involves:
 
 Object placement via model transformations,
